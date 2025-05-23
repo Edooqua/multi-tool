@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calcolo Guadagno Cripto</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(270deg, #1f1c2c, #2c3e50);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 35px 30px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 90%;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      position: relative;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-top: 15px;
+      color: #f0f0f0;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      font-size: 16px;
+      box-sizing: border-box;
+      background: #ffffffcc;
+      color: #000;
+    }
+
+    input::placeholder {
+      color: #777;
+    }
+
+    .invalid {
+      border-color: red;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 14px;
+      width: 100%;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #2ecc71;
+    }
+
+    #risultato {
+      margin-top: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffffff;
+      white-space: pre-line;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14px;
+      color: #dddddd;
+    }
+
+    .menu-toggle {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 25px;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 260px;
+      background-color: #34495e;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 999;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      border: 1px solid #2c3e50;
+    }
+
+    .side-menu.open {
+      transform: translateX(0);
+    }
+
+    .side-menu h3 {
+      color: #fff;
+      margin-top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .close-menu {
+      cursor: pointer;
+      font-size: 22px;
+      color: #fff;
+      user-select: none;
+    }
+
+    .side-menu ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    .side-menu ul li {
+      margin: 15px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ddd;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      transition: background-color 0.2s;
+    }
+
+    .side-menu ul li:hover {
+      background-color: #3d566e;
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        padding: 25px 20px;
+        border-radius: 15px;
+      }
+      h2 {
+        font-size: 20px;
+      }
+      label {
+        font-size: 14px;
+      }
+      input {
+        font-size: 14px;
+        padding: 10px;
+      }
+      button {
+        font-size: 15px;
+        padding: 12px;
+        border-radius: 10px;
+      }
+      #risultato {
+        font-size: 16px;
+      }
+      .side-menu {
+        width: 200px;
+      }
+      .side-menu ul li {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+  <nav class="side-menu" id="sideMenu" aria-hidden="true">
+    <h3>Altri strumenti/info <span class="close-menu" onclick="toggleMenu()">✖</span></h3>
+    <ul id="menuItems">
+      <li id="creditoItem" tabindex="0" role="button">Crediti</li>
+      <li onclick="window.location.href='media.html'">Calcolatore media scolastica</li>
+    </ul>
+    <div id="creditiContent" style="margin-top:20px; font-size:14px; line-height:1.4; color:#ddd; display:none;">
+      <p>🌟 Questo sito web è stato realizzato da <strong>Edoardo Rosa</strong>,</p>
+      <p>appassionato di criptovalute e tecnologia.</p>
+      <p>🎯 Creato per aiutarti a calcolare facilmente i guadagni con la cripto.</p>
+      <p>💡 Se hai suggerimenti o vuoi collaborare, contattami!</p>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>🪙 Calcola il tuo guadagno</h2>
+
+    <label>Quantità cripto:</label>
+    <input type="number" id="quantita" placeholder="es. 2.5" />
+
+    <label>Prezzo d'acquisto:</label>
+    <input type="number" id="acquisto" placeholder="es. 18000" />
+
+    <label>Prezzo di vendita:</label>
+    <input type="number" id="vendita" placeholder="es. 22000" />
+
+    <label>Percentuale da sottrarre (commissioni):</label>
+    <input type="number" id="percentuale" placeholder="es. 5" />
+
+    <label>Percentuale da sottrarre (tasse):</label>
+    <input type="number" id="tasse" placeholder="es. 10" />
+
+    <button onclick="calcola()">Calcola</button>
+
+    <div id="risultato"></div>
+
+    <div class="footer">🛠️ Sviluppato da Edo_Rosa</div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('sideMenu');
+      const isOpen = menu.classList.contains('open');
+      menu.classList.toggle('open');
+      menu.setAttribute('aria-hidden', isOpen);
+    }
+
+    const creditoItem = document.getElementById('creditoItem');
+    const creditiContent = document.getElementById('creditiContent');
+
+    creditoItem.addEventListener('click', () => {
+      const isVisible = creditiContent.style.display === 'block';
+      creditiContent.style.display = isVisible ? 'none' : 'block';
+    });
+
+    creditoItem.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        creditoItem.click();
+      }
+    });
+
+    function calcola() {
+      const qta = document.getElementById('quantita');
+      const prezzoAcq = document.getElementById('acquisto');
+      const prezzoVend = document.getElementById('vendita');
+      const percentuale = document.getElementById('percentuale');
+      const tasse = document.getElementById('tasse');
+
+      let valid = true;
+
+      [qta, prezzoAcq, prezzoVend].forEach(input => {
+        if (!input.value || parseFloat(input.value) <= 0) {
+          input.classList.add('invalid');
+          valid = false;
+        } else {
+          input.classList.remove('invalid');
+        }
+      });
+
+      // percentuale e tasse possono essere 0 ma non negative
+      [percentuale, tasse].forEach(input => {
+        if (input.value === '') {
+          input.value = 0;
+        }
+        if (parseFloat(input.value) < 0) {
+          input.classList.add('invalid');
+          valid = false;
+        } else {
+          input.classList.remove('invalid');
+        }
+      });
+
+      if (!valid) {
+        document.getElementById('risultato').textContent = '❌ Compila correttamente tutti i campi obbligatori.';
+        return;
+      }
+
+      const q = parseFloat(qta.value);
+      const acq = parseFloat(prezzoAcq.value);
+      const vend = parseFloat(prezzoVend.value);
+      const comm = parseFloat(percentuale.value);
+      const tax = parseFloat(tasse.value);
+
+      // Calcolo guadagno lordo
+      const guadagnoLordo = (vend - acq) * q;
+
+      // Commissioni e tasse calcolate sul guadagno lordo
+      const detrazioni = guadagnoLordo * ((comm + tax) / 100);
+
+      // Guadagno netto
+      const guadagnoNetto = guadagnoLordo - detrazioni;
+
+      const risultato = `
+Risultati:
+- Guadagno lordo: €${guadagnoLordo.toFixed(2)}
+- Detrazioni (commissioni + tasse): €${detrazioni.toFixed(2)}
+- Guadagno netto: €${guadagnoNetto.toFixed(2)}
+      `;
+
+      document.getElementById('risultato').textContent = risultato;
+    }
+  </script>
+</body>
+</html>

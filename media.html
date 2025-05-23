@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calcolatore Media Scolastica</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(270deg, #1f1c2c, #2c3e50);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: white;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 35px 30px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 90%;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      text-align: center;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 25px;
+    }
+    #votiContainer {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .voto-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px 15px;
+      border-radius: 15px;
+      font-size: 18px;
+      position: relative;
+      min-width: 40px;
+      user-select:none;
+    }
+    .voto-item button {
+      border: none;
+      background: transparent;
+      color: #ff5555;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      top: 2px;
+      right: 5px;
+      font-size: 18px;
+      line-height: 1;
+      padding: 0;
+      user-select:none;
+    }
+    input[type="number"] {
+      width: 120px;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      font-size: 18px;
+      box-sizing: border-box;
+      background: #ffffffcc;
+      color: #000;
+      text-align: center;
+    }
+    input[type="number"]::placeholder {
+      color: #777;
+      font-size: 14px;
+    }
+    button#aggiungiVotoBtn, button#calcolaMediaBtn {
+      margin-top: 25px;
+      padding: 14px 30px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button#aggiungiVotoBtn:hover, button#calcolaMediaBtn:hover {
+      background: #2ecc71;
+    }
+    #mediaRisultato {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffffff;
+      min-height: 30px;
+    }
+    /* Menu a tendina */
+    .menu-toggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 25px;
+      color: white;
+      cursor: pointer;
+      z-index: 1100;
+      user-select:none;
+    }
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 260px;
+      background-color: #34495e;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 1099;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+    .side-menu.open {
+      transform: translateX(0);
+    }
+    .side-menu h3 {
+      color: #ddd;
+      margin-bottom: 20px;
+      user-select:none;
+    }
+    .side-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .side-menu ul li {
+      margin: 15px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ddd;
+      cursor: pointer;
+      user-select:none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      transition: background-color 0.2s;
+    }
+    .side-menu ul li:hover {
+      background-color: #2ecc71;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+  <nav class="side-menu" id="sideMenu" aria-hidden="true">
+    <h3>Menu</h3>
+    <ul>
+      <li onclick="window.location.href='index.html'">Calcolo Guadagno Cripto</li>
+      <li onclick="window.location.href='media.html'">Calcolatore media scolastica</li>
+      <li onclick="alert('Crediti: Realizzato da Edoardo Rosa')">Crediti</li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h2>📝 Calcolatore media scolastica</h2>
+
+    <input type="number" id="inputVoto" placeholder="Inserisci voto (es: 7)" min="0" max="10" step="0.01" />
+    <button id="aggiungiVotoBtn">➕ Aggiungi voto</button>
+
+    <div id="votiContainer" aria-live="polite" aria-atomic="true" aria-relevant="additions"></div>
+
+    <button id="calcolaMediaBtn">Calcola media</button>
+
+    <div id="mediaRisultato" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <script>
+    const toggleMenu = () => {
+      const menu = document.getElementById('sideMenu');
+      const isOpen = menu.classList.contains('open');
+      menu.classList.toggle('open');
+      menu.setAttribute('aria-hidden', isOpen);
+    };
+
+    const inputVoto = document.getElementById('inputVoto');
+    const aggiungiVotoBtn = document.getElementById('aggiungiVotoBtn');
+    const votiContainer = document.getElementById('votiContainer');
+    const calcolaMediaBtn = document.getElementById('calcolaMediaBtn');
+    const mediaRisultato = document.getElementById('mediaRisultato');
+
+    let voti = [];
+
+    function rimuoviVoto(index) {
+      voti.splice(index, 1);
+      aggiornaVoti();
+      mediaRisultato.textContent = '';
+    }
+
+    function aggiornaVoti() {
+      votiContainer.innerHTML = '';
+      voti.forEach((voto, index) => {
+        const votoDiv = document.createElement('div');
+        votoDiv.className = 'voto-item';
+        votoDiv.textContent = voto.toFixed(2);
+
+        const btnRemove = document.createElement('button');
+        btnRemove.setAttribute('aria-label', `Rimuovi voto ${voto.toFixed(2)}`);
+        btnRemove.textContent = '×';
+        btnRemove.onclick = () => rimuoviVoto(index);
+
+        votoDiv.appendChild(btnRemove);
+        votiContainer.appendChild(votoDiv);
+      });
+    }
+
+    aggiungiVotoBtn.onclick = () => {
+      const votoVal = parseFloat(inputVoto.value);
+      if (isNaN(votoVal) || votoVal < 0 || votoVal > 10) {
+        alert('Inserisci un voto valido tra 0 e 10');
+        return;
+      }
+      voti.push(votoVal);
+      aggiornaVoti();
+      inputVoto.value = '';
+      inputVoto.focus();
+      mediaRisultato.textContent = '';
+    };
+
+    calcolaMediaBtn.onclick = () => {
+      if (voti.length === 0) {
+        alert('Inserisci almeno un voto prima di calcolare la media.');
+        return;
+      }
+      const somma = voti.reduce((acc, val) => acc + val, 0);
+      const media = somma / voti.length;
+      mediaRisultato.textContent = `📊 La media dei voti è: ${media.toFixed(2)}`;
+    };
+  </script>
+</body>
+</html>
